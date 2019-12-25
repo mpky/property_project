@@ -1,4 +1,8 @@
 .DS_Store
-/data/*
+/data/preprocessed/*
+/data/processed/*
+/data/raw/*
 */.ipynb_checkpoints/*
 .ipynb_checkpoints
+/notebooks/*                  # ignore everything in the notebooks folder
+!/notebooks/Bexar_EDA.ipynb   # except for the EDA file
