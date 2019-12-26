@@ -4,6 +4,6 @@
 /data/raw/*
 */.ipynb_checkpoints/*
 .ipynb_checkpoints
-notebooks/*.ipynb
-notebooks/save_variables/*.h5   
+notebooks/*
+notebooks/save_variables/*.h5
 !notebooks/Bexar_EDA.ipynb
