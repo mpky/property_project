@@ -12,6 +12,7 @@ import pandas as pd
 import numpy as np
 import warnings
 warnings.simplefilter('ignore')
+import os
 
 def merge_data():
     # Load property dataframe
@@ -89,11 +90,16 @@ def clean_add_features(corp_prop_merged):
 
     # Export as h5 file
     print('Exporting dataframe to h5 file.')
-    corp_prop_merged.to_hdf('./data/processed/bexar_merged_df.h5',
+
+    # Mkdir
+    if not os.path.exists('./data/preprocessed'):
+        os.makedirs('./data/preprocessed')
+
+    corp_prop_merged.to_hdf('./data/preprocessed/bexar_merged_df.h5',
                             key='bexar_merged_df.h5',
                             mode='w'
                            )
-    print('Dataframe has been exported as bexar_merged_df.h5 to "processed" data folder.')
+    print('Dataframe has been exported as bexar_merged_df.h5 to "preprocessed" data folder.')
 
 if __name__ == '__main__':
     clean_add_features(merge_data())
