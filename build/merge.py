@@ -1,11 +1,9 @@
 """
 Run this with PWD being the top level of the repo and
-python build/bexar_data_download_merge.py
+python build/merge.py
 
-This script will:
-1. Join the relevant columns from the TX Comptroller data file
+This script will join the relevant columns from the TX Comptroller data file
 (texas_corp_merged.h5) with the cleaned Bexar property data (bexar_property_all.h5)
-2. Create the three features the Dutch study found most significant in their analysis
 """
 
 import pandas as pd
