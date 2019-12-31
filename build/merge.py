@@ -34,11 +34,8 @@ def merge_data():
 
     # Merge based on name, but taxpayer name is not always unique
     # To get unique names in tx_corporate will use .drop_duplicates and keep the first entry
-
-"""
-To do: see if this way of dropping duplicates is adversley affecting the
-data
-"""
+ 
+# To do: see if this way of dropping duplicates is adversley affecting the data
 
     tx_corporate_df.drop_duplicates(subset='cleaned_name',keep='first',inplace=True)
     corp_prop_merged = pd.merge(bexar_property, tx_corporate_df[[

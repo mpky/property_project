@@ -14,6 +14,7 @@
 ```
 conda create --name <new_env> python=3.7
 conda activate <new_env>
+conda install nb_conda
 ```
 3. `cd` into the repo directory and run:
 
@@ -23,7 +24,12 @@ pip install -r requirements.txt
 4. Merge the two raw datasets into a preprocessed file:
 
 ```
-python build/bexar_data_download_merge.py
+python build/merge.py
+```
+
+5. Build the features used for modeling:
+```
+python build/process.py
 ```
 
 ## Run Inference
