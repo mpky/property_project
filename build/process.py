@@ -166,6 +166,16 @@ def clean_add_features():
                                                  (corp_prop_merged.owner_likely_company)) &
                                                 (corp_prop_merged.market_value >= 300000), 1, 0)
 
+
+    # Merge on labels for criminally-linked properties
+    print('Merging labels for criminally-linked properties')
+    labels = pd.read_csv('./data/labels/criminal_properties_labels.csv')
+    labels['prop_id'] = labels['Property ID']
+    labels['crim_prop'] = 1
+    labels['crim_address'] = labels.Address
+    corp_prop_merged = pd.merge(corp_prop_merged,labels[['prop_id','crim_address','crim_prop']],
+                           how='left',on='prop_id')
+
     # Export as h5 file
     print('Exporting dataframe to h5 file.')
 
