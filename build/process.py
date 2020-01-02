@@ -50,18 +50,22 @@ def clean_add_features():
     # YoY % difference from 2018 to 2019
     corp_prop_merged['yoy_diff_2019'] = (
         corp_prop_merged.market_value - corp_prop_merged.bexar_2018_market_value) / corp_prop_merged.bexar_2018_market_value
+    corp_prop_merged.loc[np.isinf(corp_prop_merged['yoy_diff_2019']), 'yoy_diff_2019'] = np.nan
 
     # YoY % difference from 2017 to 2018
     corp_prop_merged['yoy_diff_2018'] = (corp_prop_merged.bexar_2018_market_value -
                                          corp_prop_merged.bexar_2017_market_value) / corp_prop_merged.bexar_2017_market_value
+    corp_prop_merged.loc[np.isinf(corp_prop_merged['yoy_diff_2018']), 'yoy_diff_2018'] = np.nan
 
     # YoY % difference from 2016 to 2017
     corp_prop_merged['yoy_diff_2017'] = (corp_prop_merged.bexar_2017_market_value -
                                          corp_prop_merged.bexar_2016_market_value) / corp_prop_merged.bexar_2016_market_value
+    corp_prop_merged.loc[np.isinf(corp_prop_merged['yoy_diff_2017']), 'yoy_diff_2017'] = np.nan
 
     # YoY % difference from 2015 to 2016
     corp_prop_merged['yoy_diff_2016'] = (corp_prop_merged.bexar_2016_market_value -
                                          corp_prop_merged.bexar_2015_market_value) / corp_prop_merged.bexar_2015_market_value
+    corp_prop_merged.loc[np.isinf(corp_prop_merged['yoy_diff_2016']), 'yoy_diff_2016'] = np.nan
 
     # Drop unnecessary columns
     corp_prop_merged.drop(
