@@ -69,7 +69,7 @@ def clean_add_features():
 
     # Drop unnecessary columns
     corp_prop_merged.drop(
-        columns=['sup_num', 'sup_action', 'sup_cd', 'sup_desc', 'udi_group'], inplace=True)
+        columns=['sup_num', 'sup_action', 'sup_cd', 'sup_desc', 'udi_group','appr_address_suppress_flag'], inplace=True)
 
     # make a new column for owners based outside of the state of Texas
     corp_prop_merged['out_of_state_owner'] = np.where(
@@ -170,6 +170,9 @@ def clean_add_features():
                                                  (corp_prop_merged.owner_likely_company)) &
                                                 (corp_prop_merged.market_value >= 300000), 1, 0)
 
+    corp_prop_merged['situs_zip'] = corp_prop_merged.situs_zip.astype('category')
+    corp_prop_merged['hood_cd'] = corp_prop_merged.hood_cd.astype('category')
+    corp_prop_merged['py_addr_zip'] = corp_prop_merged.py_addr_zip.astype('category')
 
     # Merge on labels for criminally-linked properties
     print('Merging labels for criminally-linked properties')
@@ -179,7 +182,7 @@ def clean_add_features():
     labels['crim_address'] = labels.Address
     corp_prop_merged = pd.merge(corp_prop_merged,labels[['prop_id','crim_address','crim_prop']],
                            how='left',on='prop_id')
-    corp_prop_merged.fillna(value=0,inplace=True)
+    corp_prop_merged.crim_prop.fillna(value=0,inplace=True)
 
     # Export as h5 file
     print('Exporting dataframe to h5 file')
@@ -190,7 +193,8 @@ def clean_add_features():
 
     corp_prop_merged.to_hdf('./data/processed/bexar_processed.h5',
                             key='bexar_processed.h5',
-                            mode='w'
+                            mode='w',
+                            format='t'
                             )
 
     print('Dataframe has been exported as bexar_processed.h5 to "processed" data folder')
