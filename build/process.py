@@ -179,9 +179,10 @@ def clean_add_features():
     labels['crim_address'] = labels.Address
     corp_prop_merged = pd.merge(corp_prop_merged,labels[['prop_id','crim_address','crim_prop']],
                            how='left',on='prop_id')
+    corp_prop_merged.fillna(value=0,inplace=True)
 
     # Export as h5 file
-    print('Exporting dataframe to h5 file.')
+    print('Exporting dataframe to h5 file')
 
     # Mkdir
     if not os.path.exists('./data/processed'):
@@ -192,7 +193,7 @@ def clean_add_features():
                             mode='w'
                             )
 
-    print('Dataframe has been exported as bexar_processed.h5 to "processed" data folder.')
+    print('Dataframe has been exported as bexar_processed.h5 to "processed" data folder')
 
 
 if __name__ == '__main__':

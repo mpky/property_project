@@ -8,26 +8,27 @@
 
 ## Setup
 
-1. Clone repo
-2. Create new conda environment
+1. Prior to cloning the repo, ensure Git Large File Storage is installed (`brew install git-lfs`)
+2. Clone repo
+3. Create new conda environment
 
 ```
 conda create --name <new_env> python=3.7
 conda activate <new_env>
 conda install nb_conda
 ```
-3. `cd` into the repo directory and run:
+4. With `pwd` being the repo directory, run:
 
 ```
 pip install -r requirements.txt
 ```
-4. Merge the two raw datasets into a preprocessed file:
+5. Merge the two raw datasets into a preprocessed file:
 
 ```
 python build/merge.py
 ```
 
-5. Build the features used for modeling:
+6. Build the features used for modeling:
 ```
 python build/process.py
 ```
