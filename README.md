@@ -1,32 +1,40 @@
-# Fraud in Residential Property
+# Criminal Investment in Residential Property
 
 
 ## Directories:
-- **tests** : Put all source code for testing in an easy to find location
-- **configs** : Enable modification of all preset variables within single directory (consisting of one or many config files for separate tasks)
-- **data** : Include example a small amount of data in the Github repository so tests can be run to validate installation
-- **build** : Include scripts that automate building of a standalone environment
-- **static** : Any images or content to include in the README or web framework if part of the pipeline
+
+- **data** : h5 files that contain (nearly) raw data from Bexar County and Texas Secretary of State; will hold preprocessed h5 file as well
+- **build** : Scripts that merge and pre-process raw data from Bexar County and Texas Secretary of State
 
 ## Setup
 
-## Requisites
+1. Prior to cloning the repo, ensure Git Large File Storage is installed (`brew install git-lfs`)
+2. Clone repo
+3. Create new conda environment
 
-#### Dependencies
-
-- [Streamlit](streamlit.io)
-
-#### Installation
-To install the package above, pleae run:
-```shell
-pip install -r requiremnts
 ```
-## Configs
+conda create --name <new_env> python=3.7
+conda activate <new_env>
+conda install nb_conda
+```
+4. With `pwd` being the repo directory, run:
+
+```
+pip install -r requirements.txt
+```
+5. Merge the two raw datasets into a preprocessed file:
+
+```
+python build/merge.py
+```
+
+6. Build the features used for modeling:
+```
+python build/process.py
+```
 
 ## Run Inference
 
 ## Build Model
-
-## Serve Model
 
 ## Analysis
