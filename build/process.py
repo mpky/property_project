@@ -1,4 +1,3 @@
-import os
 """
 Run this with PWD being the top level of the repo and
 python build/process.py
@@ -12,9 +11,15 @@ import pandas as pd
 import numpy as np
 import warnings
 warnings.simplefilter('ignore')
-
+import yaml
+import os
 
 def clean_add_features():
+    # Set config path and load variables
+    config_path = os.path.join('./configs/config.yaml')
+    with open(config_path,'r') as ymlfile:
+        cfg = yaml.load(ymlfile, Loader=yaml.BaseLoader)
+
     # Read in preprocessed simplefilter
     print("Reading in preprocessed h5 file")
     corp_prop_merged = pd.read_hdf('./data/preprocessed/bexar_preprocessed.h5')
@@ -33,13 +38,14 @@ def clean_add_features():
 
     # Add main three features from Dutch paper
     # Owner is a just-established company
-    # Subtract the two dates and see if the difference is within 365 days
+    # Subtract the two dates and see if the difference is within the specificied timeframe
+    # (Default is 365 days)
     corp_prop_merged['deed_charter_diff'] = corp_prop_merged['deed_dt'] - \
         corp_prop_merged['SOS Charter Date']
 
     # If this is <= 365, consider "just-established"
     corp_prop_merged['just_established_owner'] = np.where(
-        corp_prop_merged['deed_charter_diff'] <= '365 days', 1, 0)
+        corp_prop_merged['deed_charter_diff'] <= cfg['recently_founded'], 1, 0)
     # 16,349 properties in the dataset are considered to be owned by 'just-established' companies
 
     # Foreign Owner
@@ -73,7 +79,7 @@ def clean_add_features():
 
     # make a new column for owners based outside of the state of Texas
     corp_prop_merged['out_of_state_owner'] = np.where(
-        corp_prop_merged['py_addr_state'] != 'TX', 1, 0)
+        corp_prop_merged['py_addr_state'] != cfg['out_of_state'], 1, 0)
 
     # Feature for if the owner has decided to make confidential their information
     # Convert from T/F to 1/0
@@ -120,7 +126,7 @@ def clean_add_features():
     ]
 
     corp_prop_merged['owner_likely_company'] = np.where(
-        corp_prop_merged.cleaned_name.str.contains('|'.join(terms)) == True, 1, 0)
+        corp_prop_merged.cleaned_name.str.contains('|'.join(cfg['terms_for_company'])) == True, 1, 0)
 
     # Trusts are not covered by the GTO but are a common vehicle for money laundering
     # Will make a separate column for them
