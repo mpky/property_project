@@ -14,6 +14,11 @@ warnings.simplefilter('ignore')
 import yaml
 import os
 
+def price_change(dataframe,column_1,column_2,new_column):
+    dataframe[new_column] = (dataframe[column_1] - dataframe[column_2])/dataframe[column_2]
+    dataframe.loc[np.isinf(dataframe[new_column]), new_column] = np.nan
+    return dataframe
+
 def clean_add_features():
     # Set config path and load variables
     config_path = os.path.join('./configs/config.yaml')
@@ -43,10 +48,9 @@ def clean_add_features():
     corp_prop_merged['deed_charter_diff'] = corp_prop_merged['deed_dt'] - \
         corp_prop_merged['SOS Charter Date']
 
-    # If this is <= 365, consider "just-established"
+    # 365 days is the defualt definition for "just-established"
     corp_prop_merged['just_established_owner'] = np.where(
         corp_prop_merged['deed_charter_diff'] <= cfg['recently_founded'], 1, 0)
-    # 16,349 properties in the dataset are considered to be owned by 'just-established' companies
 
     # Foreign Owner
     corp_prop_merged['foreign_based_owner'] = np.where(
@@ -54,24 +58,10 @@ def clean_add_features():
 
     # Unusual Price Fluctuations
     # YoY % difference from 2018 to 2019
-    corp_prop_merged['yoy_diff_2019'] = (
-        corp_prop_merged.market_value - corp_prop_merged.bexar_2018_market_value) / corp_prop_merged.bexar_2018_market_value
-    corp_prop_merged.loc[np.isinf(corp_prop_merged['yoy_diff_2019']), 'yoy_diff_2019'] = np.nan
-
-    # YoY % difference from 2017 to 2018
-    corp_prop_merged['yoy_diff_2018'] = (corp_prop_merged.bexar_2018_market_value -
-                                         corp_prop_merged.bexar_2017_market_value) / corp_prop_merged.bexar_2017_market_value
-    corp_prop_merged.loc[np.isinf(corp_prop_merged['yoy_diff_2018']), 'yoy_diff_2018'] = np.nan
-
-    # YoY % difference from 2016 to 2017
-    corp_prop_merged['yoy_diff_2017'] = (corp_prop_merged.bexar_2017_market_value -
-                                         corp_prop_merged.bexar_2016_market_value) / corp_prop_merged.bexar_2016_market_value
-    corp_prop_merged.loc[np.isinf(corp_prop_merged['yoy_diff_2017']), 'yoy_diff_2017'] = np.nan
-
-    # YoY % difference from 2015 to 2016
-    corp_prop_merged['yoy_diff_2016'] = (corp_prop_merged.bexar_2016_market_value -
-                                         corp_prop_merged.bexar_2015_market_value) / corp_prop_merged.bexar_2015_market_value
-    corp_prop_merged.loc[np.isinf(corp_prop_merged['yoy_diff_2016']), 'yoy_diff_2016'] = np.nan
+    price_change(corp_prop_merged,'market_value','bexar_2018_market_value','yoy_diff_2019')
+    price_change(corp_prop_merged,'bexar_2018_market_value','bexar_2017_market_value','yoy_diff_2018')
+    price_change(corp_prop_merged,'bexar_2017_market_value','bexar_2016_market_value','yoy_diff_2017')
+    price_change(corp_prop_merged,'bexar_2016_market_value','bexar_2015_market_value','yoy_diff_2016')
 
     # Drop unnecessary columns
     corp_prop_merged.drop(
@@ -176,9 +166,15 @@ def clean_add_features():
                                                  (corp_prop_merged.owner_likely_company)) &
                                                 (corp_prop_merged.market_value >= 300000), 1, 0)
 
-    corp_prop_merged['situs_zip'] = corp_prop_merged.situs_zip.astype('category')
-    corp_prop_merged['hood_cd'] = corp_prop_merged.hood_cd.astype('category')
-    corp_prop_merged['py_addr_zip'] = corp_prop_merged.py_addr_zip.astype('category')
+    # Convert several columns to categories and rename
+    corp_prop_merged['property_zip'] = corp_prop_merged.situs_zip.astype('category')
+    corp_prop_merged['neighborhood_code'] = corp_prop_merged.hood_cd.astype('category')
+    corp_prop_merged['owner_zip_code'] = corp_prop_merged.py_addr_zip.astype('category')
+
+    # Drop the old columns
+    corp_prop_merged.drop(
+        columns=['situs_zip','hood_cd','py_addr_zip'], inplace=True)
+
 
     # Merge on labels for criminally-linked properties
     print('Merging labels for criminally-linked properties')
