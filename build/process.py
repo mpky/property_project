@@ -109,25 +109,19 @@ def clean_add_features():
         (corp_prop_merged.dba.notna() | corp_prop_merged['Taxpayer Name'].notna()), 1, 0)
 
     # Name-based legal entities (minus trusts)
-    terms = [
-        'SA DE CV', 'PARTNERSHIP', 'LP', 'LLP', 'SOCIEDAD',
-        'LLC', 'CORP', 'COMPANY', 'LTD', 'INC', 'JOINT VENTURE',
-        'REAL ESTATE', 'HOLDING', 'GROUP'
-    ]
-
     corp_prop_merged['owner_likely_company'] = np.where(
         corp_prop_merged.cleaned_name.str.contains('|'.join(cfg['terms_for_company'])) == True, 1, 0)
 
     # Trusts are not covered by the GTO but are a common vehicle for money laundering
-    # Will make a separate column for them
+    # Make a separate column for them
     corp_prop_merged['owner_is_trust'] = np.where(
         corp_prop_merged.cleaned_name.str.contains(r'TRUST') == True, 1, 0)
 
-    # Convert appraiser confidential to 1/0
+    # Binarize if the appraiser is confidential
     corp_prop_merged['appr_confidential_flag'] = np.where(
         corp_prop_merged['appr_confidential_flag'] == 'T', 1, 0)
 
-    # Will use get dummies to make binary columns for each status
+    # Get dummies to make binary columns for each company status code
     bexar_sos_status = pd.get_dummies(
         corp_prop_merged['SOS Status Code'], prefix='sos_status_code_')
     corp_prop_merged = pd.concat([corp_prop_merged, bexar_sos_status], axis=1)
@@ -143,11 +137,11 @@ def clean_add_features():
     corp_prop_merged['owner_owns_multiple'] = np.where((corp_prop_merged['py_owner_id'].isin(multi_prop_list2))
                                                        | (corp_prop_merged['Taxpayer Number'].isin(multiple_prop_list)), 1, 0)
 
-    # Convert from T/F to 1/0
+    # Binarize if the ownership is split among several parties
     corp_prop_merged['partial_owner'] = np.where(
         corp_prop_merged['partial_owner'] == 'T', 1, 0)
 
-    # Trim down market values that are above the 99.9% percentile and over 100
+    # Trim down market values that are > 99.9% percentile and <= $100
     # On the top end, it's mostly military bases and on the low it's publicly-
     # owned land
     top_pctile = corp_prop_merged.market_value.quantile(0.999)
