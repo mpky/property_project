@@ -1,10 +1,15 @@
-# Criminal Investment in Residential Property
+# Detecting Criminal Investment in Residential Property
 
+## Contents:
 
-## Directories:
+- **data**:
+  - raw_h5_files/bexar_property_all.h5 - 2019 Bexar County Appraisal District data with appraisal values from 2015, 2016, 2017, and 2018 added.
+  - raw_h5_files/texas_corp_merged.h5 - State of Texas Comptroller of Public Accounts company data merged with the Comptroller's dataset that includes company directors and officers.
+  - labels/criminal_properties_labels.csv - Dataset of properties located in Bexar County that have been used to launder the proceeds of some form of crime. One such example is 1115 Links Cv, San Antonio, TX 78260, which is owned by Red Kaizen Investments LLC. Red Kaizen Investments LLC is one of dozens of companies named as defendants in the court case against Rafael Olvera Amezcua, a Mexican financier accused of running a sham savings and loans business that defrauded depositors of more than $160 million.
 
-- **data** : CSV of labeled properties, raw h5 files, preprocessed data, and processed data
-- **build** : Scripts that merge and pre-process raw data from Bexar County and Texas Comptroller
+- **build**:
+  - build/merge.py - Script that joins the relevant columns from the Comptroller dataset with the cleaned Bexar property data. The output is a preprocessed h5 file.
+  - build/process.py - Script that generates features for modelling and joins the labeled properties data. The output is a processed h5 file.
 
 ## Setup
 
