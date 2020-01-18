@@ -45,7 +45,6 @@ kiwisolver==1.1.0
 MarkupSafe==1.1.1
 matplotlib==3.1.2
 mistune==0.8.4
-mkl-service==2.3.0
 more-itertools==8.0.2
 munch==2.5.0
 nb-conda==2.2.1
@@ -99,4 +98,5 @@ watchdog==0.9.0
 wcwidth==0.1.7
 webencodings==0.5.1
 widgetsnbextension==3.5.1
+xlrd==1.2.0
 zipp==0.6.0
