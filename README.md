@@ -17,6 +17,9 @@
   - build/merge.py - Script that joins the relevant columns from the Comptroller dataset with the cleaned Bexar property data. The output is a preprocessed h5 file.
   - build/process.py - Script that generates features for modeling and joins the labeled properties data. The output is a processed h5 file.
 
+- **configs**:
+  - config.yaml - Contains variables for process.py
+
 ## Setup
 
 1. Clone repository.
