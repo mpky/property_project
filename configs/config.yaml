@@ -1,0 +1,6 @@
+# process.py variables
+recently_founded: '365 days'
+out_of_state: 'TX'
+terms_for_company: ['SA DE CV', 'PARTNERSHIP', 'LP', 'LLP', 'SOCIEDAD',
+        'LLC', 'CORP', 'COMPANY', 'LTD', 'INC', 'JOINT VENTURE',
+        'REAL ESTATE', 'HOLDING', 'GROUP']

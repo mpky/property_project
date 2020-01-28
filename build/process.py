@@ -1,4 +1,3 @@
-import os
 """
 Run this with PWD being the top level of the repo and
 python build/process.py
@@ -12,9 +11,20 @@ import pandas as pd
 import numpy as np
 import warnings
 warnings.simplefilter('ignore')
+import yaml
+import os
 
+def price_change(dataframe,column_1,column_2,new_column):
+    dataframe[new_column] = (dataframe[column_1] - dataframe[column_2])/dataframe[column_2]
+    dataframe.loc[np.isinf(dataframe[new_column]), new_column] = np.nan
+    return dataframe
 
 def clean_add_features():
+    # Set config path and load variables
+    config_path = os.path.join('./configs/config.yaml')
+    with open(config_path,'r') as ymlfile:
+        cfg = yaml.load(ymlfile, Loader=yaml.BaseLoader)
+
     # Read in preprocessed simplefilter
     print("Reading in preprocessed h5 file")
     corp_prop_merged = pd.read_hdf('./data/preprocessed/bexar_preprocessed.h5')
@@ -33,14 +43,14 @@ def clean_add_features():
 
     # Add main three features from Dutch paper
     # Owner is a just-established company
-    # Subtract the two dates and see if the difference is within 365 days
+    # Subtract the two dates and see if the difference is within the specificied timeframe
+    # (Default is 365 days)
     corp_prop_merged['deed_charter_diff'] = corp_prop_merged['deed_dt'] - \
         corp_prop_merged['SOS Charter Date']
 
-    # If this is <= 365, consider "just-established"
+    # 365 days is the defualt definition for "just-established"
     corp_prop_merged['just_established_owner'] = np.where(
-        corp_prop_merged['deed_charter_diff'] <= '365 days', 1, 0)
-    # 16,349 properties in the dataset are considered to be owned by 'just-established' companies
+        corp_prop_merged['deed_charter_diff'] <= cfg['recently_founded'], 1, 0)
 
     # Foreign Owner
     corp_prop_merged['foreign_based_owner'] = np.where(
@@ -48,24 +58,10 @@ def clean_add_features():
 
     # Unusual Price Fluctuations
     # YoY % difference from 2018 to 2019
-    corp_prop_merged['yoy_diff_2019'] = (
-        corp_prop_merged.market_value - corp_prop_merged.bexar_2018_market_value) / corp_prop_merged.bexar_2018_market_value
-    corp_prop_merged.loc[np.isinf(corp_prop_merged['yoy_diff_2019']), 'yoy_diff_2019'] = np.nan
-
-    # YoY % difference from 2017 to 2018
-    corp_prop_merged['yoy_diff_2018'] = (corp_prop_merged.bexar_2018_market_value -
-                                         corp_prop_merged.bexar_2017_market_value) / corp_prop_merged.bexar_2017_market_value
-    corp_prop_merged.loc[np.isinf(corp_prop_merged['yoy_diff_2018']), 'yoy_diff_2018'] = np.nan
-
-    # YoY % difference from 2016 to 2017
-    corp_prop_merged['yoy_diff_2017'] = (corp_prop_merged.bexar_2017_market_value -
-                                         corp_prop_merged.bexar_2016_market_value) / corp_prop_merged.bexar_2016_market_value
-    corp_prop_merged.loc[np.isinf(corp_prop_merged['yoy_diff_2017']), 'yoy_diff_2017'] = np.nan
-
-    # YoY % difference from 2015 to 2016
-    corp_prop_merged['yoy_diff_2016'] = (corp_prop_merged.bexar_2016_market_value -
-                                         corp_prop_merged.bexar_2015_market_value) / corp_prop_merged.bexar_2015_market_value
-    corp_prop_merged.loc[np.isinf(corp_prop_merged['yoy_diff_2016']), 'yoy_diff_2016'] = np.nan
+    price_change(corp_prop_merged,'market_value','bexar_2018_market_value','yoy_diff_2019')
+    price_change(corp_prop_merged,'bexar_2018_market_value','bexar_2017_market_value','yoy_diff_2018')
+    price_change(corp_prop_merged,'bexar_2017_market_value','bexar_2016_market_value','yoy_diff_2017')
+    price_change(corp_prop_merged,'bexar_2016_market_value','bexar_2015_market_value','yoy_diff_2016')
 
     # Drop unnecessary columns
     corp_prop_merged.drop(
@@ -73,7 +69,7 @@ def clean_add_features():
 
     # make a new column for owners based outside of the state of Texas
     corp_prop_merged['out_of_state_owner'] = np.where(
-        corp_prop_merged['py_addr_state'] != 'TX', 1, 0)
+        corp_prop_merged['py_addr_state'] != cfg['out_of_state'], 1, 0)
 
     # Feature for if the owner has decided to make confidential their information
     # Convert from T/F to 1/0
@@ -113,25 +109,19 @@ def clean_add_features():
         (corp_prop_merged.dba.notna() | corp_prop_merged['Taxpayer Name'].notna()), 1, 0)
 
     # Name-based legal entities (minus trusts)
-    terms = [
-        'SA DE CV', 'PARTNERSHIP', 'LP', 'LLP', 'SOCIEDAD',
-        'LLC', 'CORP', 'COMPANY', 'LTD', 'INC', 'JOINT VENTURE',
-        'REAL ESTATE', 'HOLDING', 'GROUP'
-    ]
-
     corp_prop_merged['owner_likely_company'] = np.where(
-        corp_prop_merged.cleaned_name.str.contains('|'.join(terms)) == True, 1, 0)
+        corp_prop_merged.cleaned_name.str.contains('|'.join(cfg['terms_for_company'])) == True, 1, 0)
 
     # Trusts are not covered by the GTO but are a common vehicle for money laundering
-    # Will make a separate column for them
+    # Make a separate column for them
     corp_prop_merged['owner_is_trust'] = np.where(
         corp_prop_merged.cleaned_name.str.contains(r'TRUST') == True, 1, 0)
 
-    # Convert appraiser confidential to 1/0
+    # Binarize if the appraiser is confidential
     corp_prop_merged['appr_confidential_flag'] = np.where(
         corp_prop_merged['appr_confidential_flag'] == 'T', 1, 0)
 
-    # Will use get dummies to make binary columns for each status
+    # Get dummies to make binary columns for each company status code
     bexar_sos_status = pd.get_dummies(
         corp_prop_merged['SOS Status Code'], prefix='sos_status_code_')
     corp_prop_merged = pd.concat([corp_prop_merged, bexar_sos_status], axis=1)
@@ -147,11 +137,11 @@ def clean_add_features():
     corp_prop_merged['owner_owns_multiple'] = np.where((corp_prop_merged['py_owner_id'].isin(multi_prop_list2))
                                                        | (corp_prop_merged['Taxpayer Number'].isin(multiple_prop_list)), 1, 0)
 
-    # Convert from T/F to 1/0
+    # Binarize if the ownership is split among several parties
     corp_prop_merged['partial_owner'] = np.where(
         corp_prop_merged['partial_owner'] == 'T', 1, 0)
 
-    # Trim down market values that are above the 99.9% percentile and over 100
+    # Trim down market values that are > 99.9% percentile and <= $100
     # On the top end, it's mostly military bases and on the low it's publicly-
     # owned land
     top_pctile = corp_prop_merged.market_value.quantile(0.999)
@@ -170,9 +160,15 @@ def clean_add_features():
                                                  (corp_prop_merged.owner_likely_company)) &
                                                 (corp_prop_merged.market_value >= 300000), 1, 0)
 
-    corp_prop_merged['situs_zip'] = corp_prop_merged.situs_zip.astype('category')
-    corp_prop_merged['hood_cd'] = corp_prop_merged.hood_cd.astype('category')
-    corp_prop_merged['py_addr_zip'] = corp_prop_merged.py_addr_zip.astype('category')
+    # Convert several columns to categories and rename
+    corp_prop_merged['property_zip'] = corp_prop_merged.situs_zip.astype('category')
+    corp_prop_merged['neighborhood_code'] = corp_prop_merged.hood_cd.astype('category')
+    corp_prop_merged['owner_zip_code'] = corp_prop_merged.py_addr_zip.astype('category')
+
+    # Drop the old columns
+    corp_prop_merged.drop(
+        columns=['situs_zip','hood_cd','py_addr_zip'], inplace=True)
+
 
     # Merge on labels for criminally-linked properties
     print('Merging labels for criminally-linked properties')

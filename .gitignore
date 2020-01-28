@@ -2,8 +2,10 @@
 /data/preprocessed/*
 /data/processed/*
 /data/raw/*
+/data/raw_h5_files/*
 */.ipynb_checkpoints/*
 .ipynb_checkpoints
 notebooks/*
 notebooks/save_variables/*.h5
 !notebooks/Bexar_EDA.ipynb
+!notebooks/clustering.ipynb
