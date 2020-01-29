@@ -26,21 +26,16 @@
 2. Go to <a href="https://drive.google.com/drive/folders/16hbhfiExi2Nf6zO56Dzl_28kw2cKKsB0?usp=sharing" target="_blank">this Google Drive link</a> to download the raw datasets for both Bexar Property and the Texas Comptroller.
 3. Select "Download All" in the upper righthand corner. This will download a zip file.
 4. Unzip the zip file and move the resulting "raw_h5_files" folder to this repo under the data folder. The two files will, together, be ~750 MB in size.
-5. Create new conda environment.
+5. Create new conda environment with requisite package:
 ```
-conda create --name prop_env python=3.7
+conda env create -f environment.yml
 conda activate prop_env
-conda install nb_conda
 ```
-6. With `pwd` being the repo directory, run:
-```
-pip install -r requirements.txt
-```
-7. Merge the two raw datasets into a preprocessed file:
+6. Merge the two raw datasets into a preprocessed file:
 ```
 python build/merge.py
 ```
-8. Build the features used for modeling:
+7. Build the features used for modeling:
 ```
 python build/process.py
 ```
