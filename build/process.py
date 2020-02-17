@@ -15,29 +15,27 @@ import yaml
 import os
 
 def price_change(dataframe,column_1,column_2,new_column):
+    """Return YoY price change %."""
     dataframe[new_column] = (dataframe[column_1] - dataframe[column_2])/dataframe[column_2]
     dataframe.loc[np.isinf(dataframe[new_column]), new_column] = np.nan
     return dataframe
 
 def config_loader():
-    # Set config path and load variables
-#     print('Loading variables from config file.')
+    """Set config path and load variables."""
     config_path = os.path.join('./configs/config.yaml')
     with open(config_path,'r') as ymlfile:
         cfg = yaml.load(ymlfile, Loader=yaml.BaseLoader)
-
     return cfg
 
 def dataframe_loader():
-
-    # Read in preprocessed simplefilter
+    """Return dataframe from bexar_preprocessed.h5."""
     print("Reading in preprocessed data from h5 file.")
     corp_prop_merged = pd.read_hdf('./data/preprocessed/bexar_preprocessed.h5')
     print('Dataframe loaded.')
     return corp_prop_merged
 
 def engineer_features():
-    # Load dataframe and cfg
+    """Create a number of features to be used in modeling."""
     dataframe = dataframe_loader()
     cfg = config_loader()
 
@@ -88,6 +86,7 @@ def engineer_features():
     return dataframe, cfg
 
 def binarize_features():
+    """Convert categorical features to binary."""
     dataframe, cfg = engineer_features()
 
     # Feature for if the owner has decided to make confidential their information
@@ -154,6 +153,7 @@ def binarize_features():
     return dataframe
 
 def drop_columns():
+    """Drop extraneous columns."""
     dataframe = binarize_features()
     # Dropping all other entity agent columns
     dataframe.drop(columns=[
@@ -172,7 +172,8 @@ def drop_columns():
 
      # Drop unnecessary columns
     dataframe.drop(
-        columns=['sup_num', 'sup_action', 'sup_cd', 'sup_desc', 'udi_group','appr_address_suppress_flag'], inplace=True)
+        columns=['sup_num', 'sup_action', 'sup_cd', 'sup_desc', 'udi_group','appr_address_suppress_flag'],
+        inplace=True)
 
         # Drop the old columns
     dataframe.drop(
@@ -181,10 +182,13 @@ def drop_columns():
     return dataframe
 
 def trim_values():
+    """
+    Trim down market values that are > 99.9% percentile and <= $100.
+    On the top end, it's mostly military bases and on the low it's publicly-
+    owned land and potentially mis-coded properties.
+    """
     dataframe = drop_columns()
-    # Trim down market values that are > 99.9% percentile and <= $100
-    # On the top end, it's mostly military bases and on the low it's publicly-
-    # owned land
+
     top_pctile = dataframe.market_value.quantile(0.999)
     dataframe = dataframe[(dataframe.market_value > 100) & (
         dataframe.market_value < top_pctile)].reset_index(drop=True)
@@ -199,6 +203,7 @@ def trim_values():
     return dataframe
 
 def merge_labels():
+    """Merge labels for criminally-linked properties from criminal_properties_labels.csv."""
     dataframe = trim_values()
 
     print('Merging labels for criminally-linked properties.')
@@ -213,8 +218,9 @@ def merge_labels():
     return dataframe
 
 def export_dataframe():
+    """Export now-processed dataframe as bexar_processed.h5."""
     dataframe = merge_labels()
-    # Export now-processed dataframe as h5 file
+
     print('Exporting dataframe to h5 file.')
 
     # Mkdir
@@ -230,6 +236,7 @@ def export_dataframe():
     print('Dataframe has been exported as bexar_processed.h5 to "processed" data folder.')
 
 def clean_add_features():
+    """Run export_dataframe()."""
     export_dataframe()
 
 if __name__ == '__main__':

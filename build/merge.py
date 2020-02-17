@@ -1,9 +1,5 @@
 """
-Run this with PWD being the top level of the repo and
-python build/merge.py
-
-This script will join the relevant columns from the TX Comptroller data file
-(texas_corp_merged.h5) with the cleaned Bexar property data (bexar_property_all.h5)
+Run this with PWD being the top level of the repo and python build/merge.py
 """
 
 import pandas as pd
@@ -13,6 +9,10 @@ warnings.simplefilter('ignore')
 import os
 
 def merge_data():
+    """
+    Merge bexar_property_all.h5 with texas_corp_merged.h5 and return
+    bexar_preprocessed.h5
+    """
     # Load property dataframe
     bexar_property = pd.read_hdf('./data/raw_h5_files/bexar_property_all.h5')
     # Load comptroller data that has officers info
@@ -34,9 +34,8 @@ def merge_data():
 
     # Merge based on name, but taxpayer name is not always unique
     # To get unique names in tx_corporate will use .drop_duplicates and keep the first entry
- 
-# To do: see if this way of dropping duplicates is adversley affecting the data
 
+    # To do: see if this way of dropping duplicates is adversley affecting the data
     tx_corporate_df.drop_duplicates(subset='cleaned_name',keep='first',inplace=True)
     corp_prop_merged = pd.merge(bexar_property, tx_corporate_df[[
         'Taxpayer Number',
