@@ -46,7 +46,7 @@ def export_to_h5():
     df_true_labels = get_true_labels()
     print("Exporting dataframe to h5 file.")
     df_true_labels.to_hdf(
-        './data2/processed/bexar_true_labels.h5',
+        './data/processed/bexar_true_labels.h5',
         key='bexar_true_labels.h5',
         mode='w',
         format='t'
