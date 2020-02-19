@@ -30,7 +30,7 @@ def get_true_labels():
     variables_list = check_nan[check_nan<nan_limit].index
     variables_list = variables_list[variables_list.isin(trim_prop_df.columns[trim_prop_df.dtypes!='object'])]
     variables_list = variables_list.drop([
-        'prop_id','py_owner_id','py_addr_zip_cass','prop_val_yr','appraised_val',
+        'py_owner_id','py_addr_zip_cass','prop_val_yr','appraised_val',
         'Prior_Mkt_Val','bexar_2015_market_value','bexar_2016_market_value',
         'bexar_2017_market_value','bexar_2018_market_value','owner_zip_code',
         'property_zip','neighborhood_code'

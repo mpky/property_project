@@ -10,3 +10,4 @@ notebooks/save_variables/*.h5
 !notebooks/Bexar_EDA.ipynb
 !notebooks/clustering.ipynb
 !notebooks/isolation_forest.ipynb
+!notebooks/semisupervised_pseudolabeling.ipynb
