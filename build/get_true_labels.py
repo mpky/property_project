@@ -4,6 +4,7 @@ import warnings
 warnings.simplefilter('ignore')
 
 def load_df():
+    """Read in processed data."""
     print("Reading in processed data.")
     df = pd.read_hdf('./data/processed/bexar_processed.h5')
     return df
