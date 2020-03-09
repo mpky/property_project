@@ -7,3 +7,7 @@ terms_for_company: ['SA DE CV', 'PARTNERSHIP', 'LP', 'LLP', 'SOCIEDAD',
 pctile_filter: .999
 largest_owners: 30
 nan_limit: 70000
+property_all: './data/raw_h5_files/bexar_property_all.h5'
+texas_corp_merged: './data/raw_h5_files/texas_corp_merged.h5'
+preprocessed: './data/preprocessed/bexar_preprocessed.h5'
+processed: './data/processed/bexar_processed.h5'

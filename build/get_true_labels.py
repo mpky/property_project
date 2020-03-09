@@ -12,16 +12,18 @@ def config_loader():
         cfg = yaml.load(ymlfile, Loader=yaml.BaseLoader)
     return cfg
 
-def load_df():
+def load_df(filepath):
     """Read in processed data."""
     print("Reading in processed data.")
-    df = pd.read_hdf('./data/processed/bexar_processed.h5')
+    df = pd.read_hdf(filepath)
     return df
 
 def get_true_labels():
     """Return dataframe with only properties with true labels."""
-    df = load_df()
     cfg = config_loader()
+    filepath = cfg['processed']
+    df = load_df(filepath=filepath)
+
 
     # Fill na values for price_psf with 0 (means it's an empty lot)
     df['price_psf'] = df['price_psf'].fillna(0)

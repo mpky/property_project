@@ -1,5 +1,9 @@
 """
-Run this with PWD being the top level of the repo and python build/merge.py
+Run this with PWD being the top level of the repo and python build/merge.py.
+
+This script will join the relevant columns from the TX Comptroller data file
+(texas_corp_merged.h5) with the cleaned Bexar property data
+(bexar_property_all.h5).
 """
 
 import pandas as pd
@@ -7,16 +11,31 @@ import numpy as np
 import warnings
 warnings.simplefilter('ignore')
 import os
+import yaml
+
+def config_loader():
+    """Set config path and load variables."""
+    config_path = os.path.join('./configs/config.yaml')
+    with open(config_path,'r') as ymlfile:
+        cfg = yaml.load(ymlfile, Loader=yaml.BaseLoader)
+    return cfg
 
 def merge_data():
     """
     Merge bexar_property_all.h5 with texas_corp_merged.h5 and return
     bexar_preprocessed.h5
     """
+
+    cfg = config_loader()
+    property_filepath = cfg['property_all']
+    tx_corp_filepath = cfg['texas_corp_merged']
+
     # Load property dataframe
-    bexar_property = pd.read_hdf('./data/raw_h5_files/bexar_property_all.h5')
+    print("Loading property data.")
+    bexar_property = pd.read_hdf(property_filepath)
     # Load comptroller data that has officers info
-    tx_corporate_df = pd.read_hdf('./data/raw_h5_files/texas_corp_merged.h5')
+    print("Loading corporate data.")
+    tx_corporate_df = pd.read_hdf(tx_corp_filepath)
 
 
     # Strip commas and periods
