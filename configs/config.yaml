@@ -4,3 +4,6 @@ out_of_state: 'TX'
 terms_for_company: ['SA DE CV', 'PARTNERSHIP', 'LP', 'LLP', 'SOCIEDAD',
         'LLC', 'CORP', 'COMPANY', 'LTD', 'INC', 'JOINT VENTURE',
         'REAL ESTATE', 'HOLDING', 'GROUP']
+pctile_filter: .999
+largest_owners: 30
+nan_limit: 70000
