@@ -29,7 +29,7 @@ def config_loader():
 
 def dataframe_loader(filepath):
     """Return dataframe from bexar_preprocessed.h5."""
-    print("Reading in preprocessed data from h5 file.")
+    print("Reading in preprocessed data from",filepath)
     corp_prop_merged = pd.read_hdf(filepath)
     print('Dataframe loaded.')
     return corp_prop_merged
