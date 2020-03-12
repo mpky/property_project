@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf-8
+
 """
 Run this with PWD being the top level of the repo and
 python build/process.py

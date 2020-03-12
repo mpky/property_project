@@ -4,10 +4,15 @@ out_of_state: 'TX'
 terms_for_company: ['SA DE CV', 'PARTNERSHIP', 'LP', 'LLP', 'SOCIEDAD',
         'LLC', 'CORP', 'COMPANY', 'LTD', 'INC', 'JOINT VENTURE',
         'REAL ESTATE', 'HOLDING', 'GROUP']
+preprocessed: './data/preprocessed/bexar_preprocessed.h5'
+# get_true_labels.py variables
 pctile_filter: .999
 largest_owners: 30
 nan_limit: 70000
+processed: './data/processed/bexar_processed.h5'
+# merge.py variables
 property_all: './data/raw_h5_files/bexar_property_all.h5'
 texas_corp_merged: './data/raw_h5_files/texas_corp_merged.h5'
-preprocessed: './data/preprocessed/bexar_preprocessed.h5'
-processed: './data/processed/bexar_processed.h5'
+# clustering.py variables
+true_labels: './data/processed/bexar_true_labels.h5'
+n_componenets: 7
