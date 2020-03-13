@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# coding: utf-8
+
 """
 Run this with PWD being the top level of the repo and
 python build/process.py
@@ -27,17 +30,19 @@ def config_loader():
         cfg = yaml.load(ymlfile, Loader=yaml.BaseLoader)
     return cfg
 
-def dataframe_loader():
+def dataframe_loader(filepath):
     """Return dataframe from bexar_preprocessed.h5."""
-    print("Reading in preprocessed data from h5 file.")
-    corp_prop_merged = pd.read_hdf('./data/preprocessed/bexar_preprocessed.h5')
+    print("Reading in preprocessed data from",filepath)
+    corp_prop_merged = pd.read_hdf(filepath)
     print('Dataframe loaded.')
     return corp_prop_merged
 
 def engineer_features():
     """Create a number of features to be used in modeling."""
-    dataframe = dataframe_loader()
     cfg = config_loader()
+    preprocessed_filepath = cfg['preprocessed']
+    dataframe = dataframe_loader(preprocessed_filepath)
+
 
     print("Engineering features.")
     # Create features and convert datatypes
