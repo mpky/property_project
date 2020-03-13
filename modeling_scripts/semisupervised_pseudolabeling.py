@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+"""
+This script uses pseudolabeling to train a semisupervised Gradient Boosting model.
+Outputs model metrics and confusion matrix visualization.
+"""
+
 import yaml
 import os
 import itertools

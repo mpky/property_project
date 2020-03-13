@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
-
+"""
+This script visualizes attempts at clustering the property data.
+"""
 import os
 import yaml
 import numpy as np
