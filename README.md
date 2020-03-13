@@ -1,5 +1,10 @@
 # Detecting Criminal Investment in Residential Property
 
+## About:
+
+Money-laundering in residential real estate has become a significant focus of the United States Treasury's Financial Crimes Enforcement Network (FinCEN) over the past few years. FinCEN has begun releasing Geographic Targeting Orders (GTOs) that make title insurance companies legally obligated to report a real estate transaction if it meets specific criteria. These GTOs are applied at the county level, including such counties as Miami-Dade, Dallas, and Los Angeles. One county covered by a GTO that has always interested me is Bexar County, Texas, the county that surrounds San Antonio. Under a GTO since July 2016, Bexar County and San Antonio have a long history of ties to northern Mexico, with weekend commutes between San Antonio and a city such as Monterrey commonplace. The county has also recently had several high-profile instances of Mexican politicians stashing ill-gotten gains in real estate around San Antonio.
+
+Therefore, focusing on Bexar County, I wanted to see if I could take publicly available data from the county property assessor and the state of Texas to build a model capable of detecting criminal investment or money-laundering in real estate. This repository applies several different approaches in an attempt to build such a model.
 
 ## Contents:
 
@@ -9,7 +14,7 @@
   - labels/criminal_properties_labels.csv - Dataset of properties located in Bexar County that have been used to launder the proceeds of some form of crime.
 
     One such example is 1115 Links Cv, San Antonio, TX 78260, which is owned by Red Kaizen Investments LLC. Red Kaizen Investments LLC is one of dozens of companies named as defendants in the court case against Rafael Olvera Amezcua, a Mexican financier accused of running a sham savings and loans business that defrauded depositors of more than $160 million.
-  - figures - HTML output of mapping addresses of labeled properties from folium.
+  - figures - HTML output of plotted addresses of labeled properties from folium.
   <p align="center">
     <img src="./data/figures/crim_prop_map.png" width="500" title="Map of criminal properties">
   </p>
@@ -22,8 +27,22 @@
 
       In order to build an adequately-large (several thousand) set of "innocent" properties, I assumed that every property owned by one of the top-30 most frequent owners would be innocent. I felt comfortable making that assumption because most of these owners are home builder companies and government agencies. There is, however, an obvious skew that this subset will have - newer properties as well as atypical housing that the county or city of San Antonio may own.
 
+- **modeling_scripts**:
+  - clustering.py - Script that visualizes attempts at clustering the property data.
+  - isolation_forest.py - Script that applies the Isolation Forest anomaly detection
+algorithm to the property data and then returns visualizations and
+model performance metrics.
+  - semisupervised_pseudolabeling.py - Script that uses pseudo-labeling to train a semisupervised Gradient Boosting model. Outputs model metrics and confusion matrix visualization.
+
+- **notebooks**:
+  - Bexar_EDA.ipynb
+  - clustering.ipynb
+  - isolation_forest.ipynb
+  - semisupervised_pseudolabeling.ipynb
+
+
 - **configs**:
-  - config.yaml - Contains variables for process.py
+  - config.yaml - Contains variables for .py scripts
 
 ## Setup
 
@@ -51,4 +70,15 @@ python build/get_true_labels.py
 
 ## Build Model
 
-## Analysis
+
+```
+python modeling_scripts/clustering.py
+python modeling_scripts/isolation_forest.py
+python modeling_scripts/semisupervised_pseudolabeling.py
+```
+
+## Next Steps
+
+- Train a GAN model for better semisupervised learning.
+- Visualize with Streamlit.
+- Add more features such as neighborhood ratings from Zillow.
