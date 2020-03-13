@@ -13,6 +13,6 @@ processed: './data/processed/bexar_processed.h5'
 # merge.py variables
 property_all: './data/raw_h5_files/bexar_property_all.h5'
 texas_corp_merged: './data/raw_h5_files/texas_corp_merged.h5'
-# clustering.py variables
+# clustering.py and isolation_forest.py variables
 true_labels: './data/processed/bexar_true_labels.h5'
 n_componenets: 7
