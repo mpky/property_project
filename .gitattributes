@@ -1,1 +1,0 @@
-data/raw_h5_files/*.h5 filter=lfs diff=lfs merge=lfs -text
