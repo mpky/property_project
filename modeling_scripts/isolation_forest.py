@@ -169,7 +169,15 @@ def eval_training():
     print('\n')
     print("Confusion matrix for training data:")
     print(conf_matrix,'\n')
-    plot_confusion_matrix(conf_matrix, title='Isolation Forest Confusion Matrix on Training Data')
+
+    input_key = input(
+        """Enter 'yes' to display plot of confusion matrix (close plot to continue). Type anything else to skip: """
+    )
+    if input_key == 'yes':
+        plot_confusion_matrix(conf_matrix, title='Isolation Forest Confusion Matrix on Training Data')
+
+    else:
+        print("Skipping plotting.",'\n')
     print('#'*40,'\n')
 
 
@@ -185,9 +193,16 @@ def eval_testing():
 
     conf_matrix = confusion_matrix(y_test_norm, y_pred_test_gs)
     print("Confusion matrix for test data:")
-    print(conf_matrix,'\n')
-    print('#'*40,'\n')
-    plot_confusion_matrix(conf_matrix, title='Isolation Forest Confusion Matrix on Test Data')
+    print(conf_matrix,'\n'*2)
+
+    input_key = input("Enter 'yes' to display plot of confusion matrix (close plot to continue). Type anything else to skip: ")
+    if input_key == 'yes':
+        plot_confusion_matrix(conf_matrix, title='Isolation Forest Confusion Matrix on Test Data')
+
+    else:
+        print("Skipping plotting.",'\n')
+
+    print('#'*40,'\n'*2)
 
 def plot_anomaly_scores():
     """
@@ -205,11 +220,19 @@ def plot_anomaly_scores():
     print("Outlier scores for each class in training data:")
     print("Mean score for abnormal:",np.mean(anomaly_scores_list))
     print("Mean score for normal:",np.mean(train_df[train_df.y_value==1]['anomaly_scores']))
-    print('\n'*3)
+    print('\n'*2)
 
-    anomaly_plot(train_df['anomaly_scores'],
-                 anomaly_scores_list,
-                 title='Distribution of Anomaly Scores across Training Data')
+    input_key = input("Enter 'yes' to display plot of distribution of anomaly scores. Type anything else to skip: ")
+
+    if input_key == 'yes':
+        anomaly_plot(
+            train_df['anomaly_scores'],
+            anomaly_scores_list,
+            title='Distribution of Anomaly Scores across Training Data'
+        )
+
+    print('\nGoodbye','\n')
+
 
 if __name__ == '__main__':
     output_gen_stats()
