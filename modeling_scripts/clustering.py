@@ -35,6 +35,14 @@ def read_data():
 
 def plot_reduce_dimensions():
     """Reduce dimensionality and produce a scatter plot."""
+
+    input_key = input(
+        """Enter 'yes' to display dimensions plot (close plot to continue). Type anything else to skip: """
+    )
+    if input_key != 'yes':
+        print("Skipping dimensions plot.")
+        return
+
     X, y = read_data()
     X_norm = normalize(X)
     # PCA n_componenets=2
@@ -78,6 +86,8 @@ def pca_kmeans():
     Use PCA to reduce the data to higher dimensions to possibly uncover better
     clustering.
     """
+    input("Enter any key to continue.")
+    print("\nResults of reducing dimensionality with PCA:",'\n')
     X, y = read_data()
     X_norm = normalize(X)
     cfg = config_loader()
@@ -104,6 +114,14 @@ def plot_elbow():
     Produce a distortion plot which would allow for the elbow method to possibly
     uncover true number of clusters.
     """
+    input_key = input(
+        """Enter 'yes' to display elbow plot (close plot to continue). Type anything else to skip: """
+    )
+    if input_key != 'yes':
+        print("Skipping elbow plot.")
+        return
+
+    # print('#'*40,'\n')
     X, y = read_data()
     X_norm = normalize(X)
 
@@ -123,7 +141,8 @@ def plot_elbow():
     plt.show()
 
 if __name__ == '__main__':
-    plot_reduce_dimensions()
-    plot_elbow()
     compare_labels_clusters()
     pca_kmeans()
+    plot_reduce_dimensions()
+    plot_elbow()
+    #
