@@ -2,7 +2,7 @@
 # coding: utf-8
 
 """
-The goal of this script is to first apply the Isolation Forest anomaly detection
+This script applies the the Isolation Forest anomaly detection
 algorithm to the property data and then return both visualizations and
 performance metrics.
 """

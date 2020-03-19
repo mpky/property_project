@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 """
-This script visualizes attempts at clustering the property data.
+This script visualizes clusters in the property data.
 """
 import os
 import yaml

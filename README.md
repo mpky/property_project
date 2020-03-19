@@ -4,7 +4,7 @@
 
 Money-laundering in residential real estate has become a significant focus of the United States Treasury's Financial Crimes Enforcement Network (FinCEN) over the past few years. FinCEN has begun releasing Geographic Targeting Orders (GTOs) that make title insurance companies legally obligated to report a real estate transaction if it meets specific criteria. These GTOs are applied at the county level, including such counties as Miami-Dade, Dallas, and Los Angeles. One county covered by a GTO that has always interested me is Bexar County, Texas, the county that surrounds San Antonio. Under a GTO since July 2016, Bexar County and San Antonio have a long history of ties to northern Mexico, with weekend commutes between San Antonio and a city such as Monterrey commonplace. The county has also recently had several high-profile instances of Mexican politicians stashing ill-gotten gains in real estate around San Antonio.
 
-Therefore, focusing on Bexar County, I wanted to see if I could take publicly available data from the county property assessor and the state of Texas to build a model capable of detecting criminal investment or money-laundering in real estate. This repository applies several different approaches in an attempt to build such a model.
+Therefore, focusing on Bexar County, I wanted to see if I could take publicly available data from the county property assessor and the state of Texas to build a model capable of detecting criminal investment or money-laundering in real estate. This repository visualizes the data and applies unsupervised and semi-supervised approaches to detecting criminal investment or money-laundering.
 
 ## Contents:
 
@@ -28,17 +28,17 @@ Therefore, focusing on Bexar County, I wanted to see if I could take publicly av
       In order to build an adequately-large (several thousand) set of "innocent" properties, I assumed that every property owned by one of the top-30 most frequent owners would be innocent. I felt comfortable making that assumption because most of these owners are home builder companies and government agencies. There is, however, an obvious skew that this subset will have - newer properties as well as atypical housing that the county or city of San Antonio may own.
 
 - **modeling_scripts**:
-  - clustering.py - Script that visualizes attempts at clustering the property data.
+  - clustering.py - Script that visualizes clusters in the property data.
   - isolation_forest.py - Script that applies the Isolation Forest anomaly detection
 algorithm to the property data and then returns visualizations and
 model performance metrics.
   - semisupervised_pseudolabeling.py - Script that uses pseudo-labeling to train a semisupervised Gradient Boosting model. Outputs model metrics and confusion matrix visualization.
 
 - **notebooks**:
-  - Bexar_EDA.ipynb
-  - clustering.ipynb
-  - isolation_forest.ipynb
-  - semisupervised_pseudolabeling.ipynb
+  - Bexar_EDA.ipynb - Notebook for visual inspection of the data.
+  - clustering.ipynb - Notebook that applies several unsupervised learning techniques to the data to reveal clusters.
+  - isolation_forest.ipynb - Notebook that applies the Isolation Forest anomaly detection algorithm to the property data. I also used my experience in the field to trim the dataset to what I believed to be the most important features and applied the algorithm to this subset.
+  - semisupervised_pseudolabeling.ipynb - Because I have a limited dataset of properties with labels I can be truly confident in, I used pseudo-labeling to train a Gradient Boosting Classifier.
 
 
 - **configs**:
@@ -77,7 +77,7 @@ python modeling_scripts/isolation_forest.py
 python modeling_scripts/semisupervised_pseudolabeling.py
 ```
 
-## Next Steps
+## Future Directions
 
 - Train a GAN model for better semisupervised learning.
 - Visualize with Streamlit.
