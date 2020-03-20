@@ -167,11 +167,20 @@ def eval_model():
     print("Confusion matrix:")
     conf_matrix = confusion_matrix(augmented_labeled.crim_prop,y_pred_train,labels=[1,0])
     print(conf_matrix,'\n'*2)
+    print("Performance Metrics:")
     print('Recall:',recall_score(augmented_labeled.crim_prop,y_pred_train))
     print('Precision:',precision_score(augmented_labeled.crim_prop,y_pred_train))
     print('F1 Score:',f1_score(augmented_labeled.crim_prop,y_pred_train))
 
     print('\n')
+
+    input_key = input(
+        """Enter 'yes' to display confusion matrix. Type anything else to skip: """
+    )
+    if input_key != 'yes':
+        print("Skipping plot. Goodbye.")
+        return
+
     plot_confusion_matrix(conf_matrix, title='Confusion Matrix for Gradient Boosting')
 
 if __name__ == '__main__':
