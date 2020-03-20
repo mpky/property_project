@@ -115,9 +115,22 @@ def train_gbc():
     X_labeled, y_labeled, X_unlabeled = trim_data()
     X_train, X_test, y_train, y_test = split_labeled()
     # Train model
-    print("Training first model.")
+    print("Training first model.\n")
     gbc = GradientBoostingClassifier(random_state=42)
     gbc.fit(X_train, y_train)
+
+    y_pred_train = gbc.predict(X_train)
+    print("Performance metrics for the first model on training data:")
+    print('Recall:',recall_score(y_train,y_pred_train))
+    print('Precision:',precision_score(y_train,y_pred_train))
+    print('F1 Score:',f1_score(y_train,y_pred_train),'\n')
+
+    y_pred_test = gbc.predict(X_test)
+    print("Performance metrics for the first model on test data:")
+    print('Recall:',recall_score(y_test,y_pred_test))
+    print('Precision:',precision_score(y_test,y_pred_test))
+    print('F1 Score:',f1_score(y_test,y_pred_test),'\n')
+
     return gbc
 
 def get_pseudo():
@@ -127,7 +140,7 @@ def get_pseudo():
 
     gbc = train_gbc()
     X_labeled, y_labeled, X_unlabeled = trim_data()
-
+    input("Enter any key to continue.\n")
     print("Producing pseudolabels.")
     pseudo_labels = gbc.predict(X_unlabeled)
 
@@ -156,7 +169,7 @@ def train_pseudo_gbc():
     y_pred_train = gbc_aug.predict(augmented_labeled.iloc[:,:-1])
     return augmented_labeled, y_pred_train
 
-def eval_model():
+def eval_second_model():
     """
     Evaluate model performance and visualize confusion matrix.
     """
@@ -167,7 +180,7 @@ def eval_model():
     print("Confusion matrix:")
     conf_matrix = confusion_matrix(augmented_labeled.crim_prop,y_pred_train,labels=[1,0])
     print(conf_matrix,'\n'*2)
-    print("Performance Metrics:")
+    print("Performance metrics for second model:")
     print('Recall:',recall_score(augmented_labeled.crim_prop,y_pred_train))
     print('Precision:',precision_score(augmented_labeled.crim_prop,y_pred_train))
     print('F1 Score:',f1_score(augmented_labeled.crim_prop,y_pred_train))
@@ -184,4 +197,4 @@ def eval_model():
     plot_confusion_matrix(conf_matrix, title='Confusion Matrix for Gradient Boosting')
 
 if __name__ == '__main__':
-    eval_model()
+    eval_second_model()
