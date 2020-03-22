@@ -1,10 +1,20 @@
 # Detecting Criminal Investment in Residential Property
 
+<p align="center">
+  <img src="./data/figures/GBC_Pseudo_SSL.png" width="400" height="400" title="Map of criminal properties">
+</p>
+
+__Performance metrics for GBC on pseudo-labeled data:__
+- Recall: 0.8797
+- Precision: 0.9428
+- F1 Score: 0.9101
+
+
 ## About:
 
-Money-laundering in residential real estate has become a significant focus of the United States Treasury's Financial Crimes Enforcement Network (FinCEN) over the past few years. FinCEN has begun releasing Geographic Targeting Orders (GTOs) that make title insurance companies legally obligated to report a real estate transaction if it meets specific criteria. These GTOs are applied at the county level, including such counties as Miami-Dade, Dallas, and Los Angeles. One county covered by a GTO that has always interested me is Bexar County, Texas, the county that surrounds San Antonio. Under a GTO since July 2016, Bexar County and San Antonio have a long history of ties to northern Mexico, with weekend commutes between San Antonio and a city such as Monterrey commonplace. The county has also recently had several high-profile instances of Mexican politicians stashing ill-gotten gains in real estate around San Antonio.
+Money-laundering in residential real estate has become a significant focus of the United States Treasury's Financial Crimes Enforcement Network (FinCEN) over the past few years. As a part of this focus, FinCEN has begun releasing Geographic Targeting Orders (GTOs) that make title insurance companies legally obligated to report a real estate transaction if it meets specific criteria. These GTOs are applied at the county level, including such counties as Miami-Dade, Dallas, and Los Angeles. One county covered by a GTO that has always interested me is Bexar County, Texas, the county that surrounds San Antonio. Under a GTO since July 2016, Bexar County and San Antonio have a long history of ties to northern Mexico, with weekend commutes between San Antonio and Monterrey commonplace. The county has also recently had several high-profile instances of Mexican politicians stashing ill-gotten gains in real estate around San Antonio.
 
-Therefore, focusing on Bexar County, I wanted to see if I could take publicly available data from the county property assessor and the state of Texas to build a model capable of detecting criminal investment or money-laundering in real estate. This repository visualizes the data and applies unsupervised and semi-supervised approaches to detecting criminal investment or money-laundering.
+Therefore, focusing on Bexar County, I wanted to see if I could take publicly available data from the county property assessor and the state of Texas to build a model capable of detecting criminal investment or money-laundering in real estate. This repository visualizes the data and applies unsupervised and semi-supervised approaches to detecting criminal investment.
 
 ## Contents:
 
@@ -81,4 +91,4 @@ python modeling_scripts/semisupervised_pseudolabeling.py
 
 - Train a GAN model for better semisupervised learning.
 - Visualize with Streamlit.
-- Add more features such as neighborhood ratings from Zillow.
+- Add more features, such as Zillow neighborhood ratings, that have proven useful in other similar exercises.
