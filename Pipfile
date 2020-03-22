@@ -1,0 +1,24 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+pandas = "*"
+numpy = "==1.18.0"
+pyyaml = "*"
+scipy = "==1.4.1"
+matplotlib = "==3.1.2"
+seaborn = "==0.9.0"
+scikit-learn = "==0.22.1"
+xgboost = "*"
+jupyter = "*"
+jupyter-contrib-nbextensions = "*"
+ipykernel = "*"
+folium = "==0.10.1"
+geopy = "==1.20.0"
+
+[requires]
+python_version = "3.7"
