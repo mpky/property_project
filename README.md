@@ -1,13 +1,13 @@
 # Detecting Criminal Investment in Residential Property
 
 <p align="center">
-  <img src="./data/figures/GBC_Pseudo_SSL.png" width="400" height="400" title="Map of criminal properties">
+  <img src="./data/figures/gbc_gs.png" width="400" height="400" title="Map of criminal properties">
 </p>
 
 __Performance metrics for GBC on pseudo-labeled data:__
-- Recall: 0.8797
-- Precision: 0.9428
-- F1 Score: 0.9101
+- Recall: 0.9479
+- Precision: 0.9678
+- F1 Score: 0.9578
 
 
 ## About:

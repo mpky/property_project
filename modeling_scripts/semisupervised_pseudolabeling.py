@@ -164,8 +164,13 @@ def train_pseudo_gbc():
 
 
     print("Training second model on pseudolabeled data.")
-    gbc_aug = GradientBoostingClassifier(random_state=42)
-    gbc_aug.fit(augmented_labeled.iloc[:,:-1], augmented_labeled.crim_prop)
+
+    X_aug = augmented_labeled.iloc[:,:-1]
+    y_aug = augmented_labeled.crim_prop
+
+    params = {'max_depth': 4, 'max_features': 'auto', 'n_estimators': 100}
+    gbc_aug = GradientBoostingClassifier(**params, random_state=42)
+    gbc_aug.fit(X_aug, y_aug)
     y_pred_train = gbc_aug.predict(augmented_labeled.iloc[:,:-1])
     return augmented_labeled, y_pred_train
 
