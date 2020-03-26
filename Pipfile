@@ -19,6 +19,9 @@ jupyter-contrib-nbextensions = "*"
 ipykernel = "*"
 folium = "==0.10.1"
 geopy = "==1.20.0"
+streamlit = "*"
+nbconvert = "*"
+joblib = "*"
 
 [requires]
 python_version = "3.7"

@@ -93,3 +93,12 @@ python modeling_scripts/semisupervised_pseudolabeling.py
 - Train a GAN model for better semisupervised learning.
 - Visualize with Streamlit.
 - Add more features, such as Zillow neighborhood ratings, that have proven useful in other similar exercises.
+
+## Changelog
+##### branch==dev2 20200325
+##### Added
+- Gridsearching for gradient boosting classifier in semisupervised_pseudolabeling.py
+- saved GBC model under models folder
+
+##### Changed
+##### Removed
