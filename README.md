@@ -97,8 +97,10 @@ python modeling_scripts/semisupervised_pseudolabeling.py
 ## Changelog
 ##### branch==dev2 20200325
 ##### Added
-- Gridsearching for gradient boosting classifier in semisupervised_pseudolabeling.py
-- saved GBC model under models folder
-
+- Grid-searching for gradient boosting classifier in ssl notebook.
+- GBC model saved under models folder.
+- Figure with performance metrics for the grid-searched model.
 ##### Changed
+- Second gradient boosting model to include grid-searched parameters.
 ##### Removed
+- Figure with old performance metrics.
