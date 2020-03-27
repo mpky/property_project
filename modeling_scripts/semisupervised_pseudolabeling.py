@@ -65,6 +65,26 @@ def plot_confusion_matrix(conf_matrix, title, classes=['criminally-linked', 'nor
     plt.xlabel('Predicted label',fontsize=11,labelpad=-25)
     plt.show()
 
+def plot_feature_importances(model, X):
+    """Grab feature importances and plot."""
+
+    # Grab features, sort by index
+    feature_importance = model.feature_importances_
+    sorted_idx = np.argsort(feature_importance)
+    features = X.columns
+
+    # Plot
+    plt.figure(figsize=(6,8))
+    pos = np.arange(sorted_idx.shape[0]) + .5
+
+    plt.barh(pos, feature_importance[sorted_idx],color='royalblue')
+    plt.yticks(pos, features[sorted_idx],fontsize=11)
+    plt.xlabel('Importance',labelpad=10,fontsize=13)
+    plt.title('Variable Importance',fontsize=15)
+
+    plt.tight_layout()
+    plt.show()
+
 def trim_data():
     """
     Trim to just the data needed for modeling. Trim outlier properties.
@@ -172,14 +192,17 @@ def train_pseudo_gbc():
     gbc_aug = GradientBoostingClassifier(**params, random_state=42)
     gbc_aug.fit(X_aug, y_aug)
     y_pred_train = gbc_aug.predict(augmented_labeled.iloc[:,:-1])
-    return augmented_labeled, y_pred_train
+    return augmented_labeled, y_pred_train, gbc_aug
 
 def eval_second_model():
     """
     Evaluate model performance and visualize confusion matrix.
     """
 
-    augmented_labeled, y_pred_train = train_pseudo_gbc()
+    augmented_labeled, y_pred_train, model = train_pseudo_gbc()
+
+    X_aug = augmented_labeled.iloc[:,:-1]
+    y_aug = augmented_labeled.crim_prop
 
     print('\n')
     print("Confusion matrix:")
@@ -193,13 +216,24 @@ def eval_second_model():
     print('\n')
 
     input_key = input(
-        """Enter 'yes' to display confusion matrix. Type anything else to skip: """
+        """Enter 'yes' to display confusion matrix (close the window to continue). Type anything else to skip: """
     )
-    if input_key != 'yes':
-        print("Skipping plot. Goodbye.")
+    if input_key == 'yes':
+        plot_confusion_matrix(conf_matrix, title='Confusion Matrix for Gradient Boosting')
+    else:
+        print("Skipping plot.")
+
+    input_key = input(
+        """Enter 'yes' to display feature importances. Type anything else to skip: """
+    )
+
+    if input_key == 'yes':
+        plot_feature_importances(model=model, X=X_aug)
+    else:
+        print("Skipping plot. Goodbye")
         return
 
-    plot_confusion_matrix(conf_matrix, title='Confusion Matrix for Gradient Boosting')
+
 
 if __name__ == '__main__':
     eval_second_model()

@@ -109,6 +109,7 @@ python modeling_scripts/semisupervised_pseudolabeling.py
 ##### branch==dev2 20200326
 ###### Added
 - Feature importance plot for GBC.
+- Output feature importance plot for ssl .py script.
 
 ##### branch==dev2 20200325
 ###### Added
