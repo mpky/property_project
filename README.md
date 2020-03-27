@@ -1,13 +1,23 @@
 # Detecting Criminal Investment in Residential Property
 
 <p align="center">
-  <img src="./data/figures/GBC_Pseudo_SSL.png" width="400" height="400" title="Map of criminal properties">
+  <img src="./data/figures/gbc_gs.png" width="400" height="400" title="Map of criminal properties">
 </p>
 
 __Performance metrics for GBC on pseudo-labeled data:__
-- Recall: 0.8797
-- Precision: 0.9428
-- F1 Score: 0.9101
+- Recall: 0.9479
+- Precision: 0.9678
+- F1 Score: 0.9578
+
+<p align="center">
+  <img src="./data/figures/gbc_variable_importance.png" width="450" height="550" title="Map of criminal properties">
+</p>
+
+It is somewhat surprising to see raw square footage as the most important feature for the model, but several of the others conform with what I was expecting.
+
+A [Dutch study](https://www.politieacademie.nl/kennisenonderzoek/kennis/mediatheek/PDF/86218.pdf) that largely served as inspiration for this project found the three best indicators to identify conspicuous properties in the Netherlands are foreign ownership, the owner being a just-established company, and unusual price fluctuations. Therefore, my model having year-over-year price differences for multiple years as some of the most important features aligns with their third indicator.
+
+Moreover, the property being owned by a company that was established within 365 days of the property purchase date is the fourth-most important feature in my model. This is nearly identical to the above feature devised in the Dutch study.
 
 
 ## About:
@@ -60,10 +70,11 @@ model performance metrics.
 2. Go to <a href="https://drive.google.com/drive/folders/16hbhfiExi2Nf6zO56Dzl_28kw2cKKsB0?usp=sharing" target="_blank">this Google Drive link</a> to download the raw datasets for both Bexar Property and the Texas Comptroller.
 3. Select "Download All" in the upper righthand corner. This will download a zip file.
 4. Unzip the zip file and move the resulting "raw_h5_files" folder to this repo under the data folder. The two files will, together, be ~750 MB in size.
-5. Create new conda environment with requisite package:
+5. Install pipenv (if not already installed) and create a new environment with the requisite packages:
 ```
-conda env create -f environment.yml
-conda activate prop_env
+brew install pipenv
+pipenv install
+pipenv shell
 ```
 6. Merge the two raw datasets into a preprocessed file:
 ```
@@ -92,3 +103,22 @@ python modeling_scripts/semisupervised_pseudolabeling.py
 - Train a GAN model for better semisupervised learning.
 - Visualize with Streamlit.
 - Add more features, such as Zillow neighborhood ratings, that have proven useful in other similar exercises.
+
+## Changelog
+
+##### branch==dev2 20200326
+###### Added
+- Feature importance plot for GBC.
+- Output feature importance plot for ssl .py script.
+
+##### branch==dev2 20200325
+###### Added
+- Grid-searching for gradient boosting classifier in ssl notebook.
+- GBC model saved under models folder.
+- Figure with performance metrics for the grid-searched model.
+
+###### Changed
+- Second gradient boosting model to include grid-searched parameters.
+
+###### Removed
+- Figure with old performance metrics.
