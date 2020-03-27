@@ -9,6 +9,16 @@ __Performance metrics for GBC on pseudo-labeled data:__
 - Precision: 0.9678
 - F1 Score: 0.9578
 
+<p align="center">
+  <img src="./data/figures/gbc_variable_importance.png" width="450" height="550" title="Map of criminal properties">
+</p>
+
+It is somewhat surprising to see raw square footage as the most important feature for the model, but several of the others conform with what I was expecting.
+
+A [Dutch study](https://www.politieacademie.nl/kennisenonderzoek/kennis/mediatheek/PDF/86218.pdf) that largely served as inspiration for this project found the three best indicators to identify conspicuous properties in the Netherlands are foreign ownership, the owner being a just-established company, and unusual price fluctuations. Therefore, my model having year-over-year price differences for multiple years as some of the most important features aligns with their third indicator.
+
+Moreover, the property being owned by a company that was established within 365 days of the property purchase date is the fourth-most important feature in my model. This is nearly identical to the above feature devised in the Dutch study.
+
 
 ## About:
 
@@ -95,12 +105,19 @@ python modeling_scripts/semisupervised_pseudolabeling.py
 - Add more features, such as Zillow neighborhood ratings, that have proven useful in other similar exercises.
 
 ## Changelog
+
+##### branch==dev2 20200326
+###### Added
+- Feature importance plot for GBC.
+
 ##### branch==dev2 20200325
-##### Added
+###### Added
 - Grid-searching for gradient boosting classifier in ssl notebook.
 - GBC model saved under models folder.
 - Figure with performance metrics for the grid-searched model.
-##### Changed
+
+###### Changed
 - Second gradient boosting model to include grid-searched parameters.
-##### Removed
+
+###### Removed
 - Figure with old performance metrics.
