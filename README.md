@@ -1,30 +1,33 @@
-# Detecting Criminal Investment in Residential Property
+## Detecting Criminal Investment in Residential Property in Bexar County, Texas
 
 <p align="center">
-  <img src="./data/figures/gbc_gs.png" width="400" height="400" title="Map of criminal properties">
+  <img src="./data/figures/conf_matrix_gbc_pseudo.png" width="500" height="500" title="Confusion Matrix for GBC Model">
 </p>
 
-__Performance metrics for GBC on pseudo-labeled data:__
-- Recall: 0.9479
-- Precision: 0.9678
-- F1 Score: 0.9578
+__Performance metrics for Gradient Boosting classifier trained on pseudo-labeled data on original test data:__
+- Recall: 0.8
+- Precision: 0.8
+- F1 Score: 0.8
 
 <p align="center">
-  <img src="./data/figures/gbc_variable_importance.png" width="450" height="550" title="Map of criminal properties">
+  <img src="./data/figures/gbc_feat_importance.png" width="475" height="575" title="Feature Importances">
 </p>
 
-It is somewhat surprising to see raw square footage as the most important feature for the model, but several of the others conform with what I was expecting.
 
-A [Dutch study](https://www.politieacademie.nl/kennisenonderzoek/kennis/mediatheek/PDF/86218.pdf) that largely served as inspiration for this project found the three best indicators to identify conspicuous properties in the Netherlands are foreign ownership, the owner being a just-established company, and unusual price fluctuations. Therefore, my model having year-over-year price differences for multiple years as some of the most important features aligns with their third indicator.
+A [Dutch study](https://www.politieacademie.nl/kennisenonderzoek/kennis/mediatheek/PDF/86218.pdf) that largely served as inspiration for this project found the three best indicators to identify conspicuous properties in the Netherlands are foreign ownership, the owner being a just-established company, and unusual price fluctuations. Therefore, my model having `just_established_owner` as the most important feature matches their study exactly.
 
-Moreover, the property being owned by a company that was established within 365 days of the property purchase date is the fourth-most important feature in my model. This is nearly identical to the above feature devised in the Dutch study.
+Also encouraging is my model having year-over-year price differences for two years as some of the most important features. This roughly aligns with their third indicator of unusual price fluctuations.
+
+Next, `out_of_state_owner` roughly maps to foreign ownership in the Dutch case.
+
+Lastly, `owner_own_multiple` fits the general typology of money laundering in real estate where someone would own more than one property to launder larger amounts of money.
 
 
 ## About:
 
 Money-laundering in residential real estate has become a significant focus of the United States Treasury's Financial Crimes Enforcement Network (FinCEN) over the past few years. As a part of this focus, FinCEN has begun releasing Geographic Targeting Orders (GTOs) that make title insurance companies legally obligated to report a real estate transaction if it meets specific criteria. These GTOs are applied at the county level, including such counties as Miami-Dade, Dallas, and Los Angeles. One county covered by a GTO that has always interested me is Bexar County, Texas, the county that surrounds San Antonio. Under a GTO since July 2016, Bexar County and San Antonio have a long history of ties to northern Mexico, with weekend commutes between San Antonio and Monterrey commonplace. The county has also recently had several high-profile instances of Mexican politicians stashing ill-gotten gains in real estate around San Antonio.
 
-Therefore, focusing on Bexar County, I wanted to see if I could take publicly available data from the county property assessor and the state of Texas to build a model capable of detecting criminal investment or money-laundering in real estate. This repository visualizes the data and applies unsupervised and semi-supervised approaches to detecting criminal investment.
+Therefore, focusing on Bexar County, I used publicly available data from the county property assessor and the state of Texas to build a model capable of detecting criminal investment in residential real estate in the county. This repository visualizes the data and applies unsupervised and semi-supervised approaches to detecting criminal investment.
 
 ## Contents:
 
@@ -106,10 +109,21 @@ python modeling_scripts/semisupervised_pseudolabeling.py
 
 ## Changelog
 
+##### branch==dev3 20200415
+###### Changed
+- Figures to reflect new performance metrics
+- README overview to reflect reworked feature importances and metrics
+
+##### branch==dev3 20200414
+###### Added
+- Grid-searched base model for pseudo-labeling
+- New model in models/ folder
+
 ##### branch==dev2 20200326
 ###### Added
 - Feature importance plot for GBC.
 - Output feature importance plot for ssl .py script.
+- New feature importance visualization
 
 ##### branch==dev2 20200325
 ###### Added
