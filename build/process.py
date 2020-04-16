@@ -111,7 +111,7 @@ def binarize_features():
     dataframe['entity_agent_binary'] = np.where(
         dataframe['entity_agent_id'] == 0, 0, 1)
 
-        # Make two columns for legal entities and those that are "likely" legal
+    # Make two columns for legal entities and those that are "likely" legal
     # entities based on name
     dataframe['owner_legal_person'] = np.where(
         (dataframe.dba.notna() | dataframe['Taxpayer Name'].notna()), 1, 0)
