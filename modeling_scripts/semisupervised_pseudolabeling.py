@@ -123,7 +123,7 @@ def split_labeled():
 
     X_labeled, y_labeled, X_unlabeled = trim_data()
     X_train, X_test, y_train, y_test = train_test_split(
-        X_labeled, y_labeled, test_size=0.25, random_state=3
+        X_labeled, y_labeled, test_size=0.33, random_state=13
     )
 
     return X_train, X_test, y_train, y_test
@@ -136,40 +136,53 @@ def train_gbc():
     X_train, X_test, y_train, y_test = split_labeled()
     # Train model
     print("Training first model.\n")
-    gbc = GradientBoostingClassifier(random_state=42)
-    gbc.fit(X_train, y_train)
 
-    y_pred_train = gbc.predict(X_train)
+    # Grid-search Gradient Boosting model for pseudo-labeling
+    scoring = {
+        'AUC': 'roc_auc',
+        'Recall': make_scorer(recall_score,pos_label=1),
+        'Precision': make_scorer(precision_score,pos_label=1)
+    }
+    gs = GradientBoostingClassifier(random_state=42)
+    grid = {
+        'max_depth': [2,3,4],
+        'n_estimators': [75,100],
+        'max_features': ['auto','sqrt']
+    }
+    gbc_gs = GridSearchCV(gs, grid, cv=3, scoring=scoring, refit='Recall')
+    gbc_gs.fit(X_train, y_train)
+
+    y_pred_train = gbc_gs.predict(X_train)
     print("Performance metrics for the first model on training data:")
     print('Recall:',recall_score(y_train,y_pred_train))
     print('Precision:',precision_score(y_train,y_pred_train))
     print('F1 Score:',f1_score(y_train,y_pred_train),'\n')
 
-    y_pred_test = gbc.predict(X_test)
+    y_pred_test = gbc_gs.predict(X_test)
     print("Performance metrics for the first model on test data:")
     print('Recall:',recall_score(y_test,y_pred_test))
     print('Precision:',precision_score(y_test,y_pred_test))
     print('F1 Score:',f1_score(y_test,y_pred_test),'\n')
 
-    return gbc
+    return gbc_gs
 
 def get_pseudo():
     """
     Predict pseudo-labels on unlabeled data and combine with labeled data.
     """
 
-    gbc = train_gbc()
+    gbc_gs = train_gbc()
     X_labeled, y_labeled, X_unlabeled = trim_data()
     input("Enter any key to continue.\n")
     print("Producing pseudolabels.")
-    pseudo_labels = gbc.predict(X_unlabeled)
+    pseudo_labels = gbc_gs.predict(X_unlabeled)
 
     # Add pseudo-labels to test
     augmented_test = X_unlabeled.copy(deep=True)
     augmented_test['crim_prop'] = pseudo_labels
 
     # Take a fraction of the pseudo-labeled data to combine with the labeled training data
-    sampled_test = augmented_test.sample(frac=.4,random_state=42)
+    sampled_test = augmented_test.sample(frac=.15,random_state=42)
     print('Length of pseudo-labeled data:',len(sampled_test))
 
     # Re-merge
@@ -196,22 +209,22 @@ def train_pseudo_gbc():
 
 def eval_second_model():
     """
-    Evaluate model performance and visualize confusion matrix.
+    Evaluate model performance on original test data and visualize confusion matrix.
     """
 
-    augmented_labeled, y_pred_train, model = train_pseudo_gbc()
+    X_train,X_test,y_train,y_test = split_labeled()
+    augmented_labeled, y_pred_train, gbc_aug = train_pseudo_gbc()
 
-    X_aug = augmented_labeled.iloc[:,:-1]
-    y_aug = augmented_labeled.crim_prop
+    y_pred_test_pseudo = gbc_aug.predict(X_test)
 
     print('\n')
     print("Confusion matrix:")
-    conf_matrix = confusion_matrix(augmented_labeled.crim_prop,y_pred_train,labels=[1,0])
+    conf_matrix = confusion_matrix(y_test,y_pred_test_pseudo,labels=[1,0])
     print(conf_matrix,'\n'*2)
     print("Performance metrics for second model:")
-    print('Recall:',recall_score(augmented_labeled.crim_prop,y_pred_train))
-    print('Precision:',precision_score(augmented_labeled.crim_prop,y_pred_train))
-    print('F1 Score:',f1_score(augmented_labeled.crim_prop,y_pred_train))
+    print('Recall:',recall_score(y_test,y_pred_test_pseudo))
+    print('Precision:',precision_score(y_test,y_pred_test_pseudo))
+    print('F1 Score:',f1_score(y_test,y_pred_test_pseudo))
 
     print('\n')
 
@@ -228,7 +241,7 @@ def eval_second_model():
     )
 
     if input_key == 'yes':
-        plot_feature_importances(model=model, X=X_aug)
+        plot_feature_importances(model=gbc_aug, X=X_test)
     else:
         print("Skipping plot. Goodbye")
         return
