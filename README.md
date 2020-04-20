@@ -109,6 +109,10 @@ python modeling_scripts/semisupervised_pseudolabeling.py
 
 ## Changelog
 
+##### branch==dev3 20200418
+###### Added
+- Figures for top ten features as well as bar chart for metrics comparison
+
 ##### branch==dev3 20200415
 ###### Changed
 - Figures to reflect new performance metrics
