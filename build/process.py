@@ -64,7 +64,7 @@ def engineer_features():
     dataframe['deed_charter_diff'] = dataframe['deed_dt'] - \
         dataframe['SOS Charter Date']
 
-    # 365 days is the defualt definition for "just-established"
+    # 365 days is the default definition for "just-established"
     dataframe['just_established_owner'] = np.where(
         dataframe['deed_charter_diff'] <= cfg['recently_founded'], 1, 0)
 
