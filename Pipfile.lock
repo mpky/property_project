@@ -382,7 +382,7 @@
                 "sha256:d348c5d4ae31496b2aa060d6d9b787864dd204f9480baaa52d18850cb43e9f49"
             ],
             "index": "pypi",
-            "version": "==0.16.0"
+            "version": ">=1.2.0"
         },
         "jsonschema": {
             "hashes": [
